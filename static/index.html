@@ -1,0 +1,105 @@
+<html>
+<head>
+<title> Image verifier -- Sweety </title>
+<style>
+/* For mobile phones: */
+[class*="col-"] {
+    width: 100%;
+}
+@media only screen and (min-width: 768px) {
+    /* For desktop: */
+    .col-1 {width: 8.33%;}
+    .col-2 {width: 16.66%;}
+    .col-3 {width: 25%;}
+    .col-4 {width: 33.33%;}
+    .col-5 {width: 41.66%;}
+    .col-6 {width: 50%;}
+    .col-7 {width: 58.33%;}
+    .col-8 {width: 66.66%;}
+    .col-9 {width: 75%;}
+    .col-10 {width: 83.33%;}
+    .col-11 {width: 91.66%;}
+    .col-12 {width: 100%;}
+}
+
+h1 {
+    text-align: center;
+}
+button {
+  width: 400px;
+  height: 40px;
+
+}
+img {
+  width: 300px;
+  height: 400px
+}
+</style>
+
+</head>
+</body>
+<div class=".col-1">
+  <h1 id="word">Word</h1>
+  <div class=".col-4">
+  <img src="" id="img1" onclick="javascript:setImage('img1')">
+  <img src="" id="img2" onclick="javascript:setImage('img2')">
+  <img src="" id="img3" onclick="javascript:setImage('img3')">
+  <img src="" id="img4" onclick="javascript:setImage('img4')">
+</div>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<button type="button" id="not" onclick="javascript:setImage('not')">None of them</button>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<button type="button" id="nn" onclick="javascript:setImage('nn')">Not necessary</button>
+
+</body>
+</html>
+
+<script>
+  var wordNo = 0
+  refreshData()
+  // Get images
+  // let BASE_URL = "localhost:5000"
+  function refreshData() {
+    callAjax("/api/getImage", "GET", "", function(response) {
+        var images = response["imageUrl"].trim().split(" ")
+        for(var i = 0; i < images.length; i++) {
+          document.getElementById(("img" + (i + 1))).src = images[i]
+        }
+        document.getElementById("word").innerText = response["word"].trim()
+        wordNo = response["No"]
+    })
+  }
+
+  function setImage(id) {
+    imgUrl = "imgUrl="
+    if(id.indexOf("img" !== -1)) {
+      imgUrl += document.getElementById(id).src
+    } else if(document.getElementById(id) == "not") {
+      imgUrl += "find"
+    } else {
+      imgUrl += ""
+    }
+
+     let param = "No=" + wordNo + "&" + imgUrl
+    callAjax("/api/setImage", "POST", param, function(response) {
+      if(response["status"] == 1) {
+        refreshData()
+      }
+    })
+  }
+// Track event
+  function callAjax(url,method, param, callback) {
+      var xmlhttp;
+      // compatible with IE7+, Firefox, Chrome, Opera, Safari
+      xmlhttp = new XMLHttpRequest();
+      xmlhttp.onreadystatechange = function(){
+          if (xmlhttp.readyState == 4 && xmlhttp.status == 200){
+              callback(JSON.parse(xmlhttp.responseText));
+          }
+      }
+      xmlhttp.open(method, url, true);
+      xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      xmlhttp.send(param);
+  }
+</script>

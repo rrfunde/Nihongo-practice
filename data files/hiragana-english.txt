@@ -1,0 +1,10 @@
+たべます	to eat
+のみます	to drink
+かいます	to buy
+みます	to watch, look, see
+いきます	to go
+かえります	to return, go home
+おくります	to send
+あいます	to meet
+とまります	to stop, stay
+します	to do, play
