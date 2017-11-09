@@ -27,14 +27,14 @@ def getCategory():
 def getWords():
     req = request.json
     word = hiragana = romaji = kanji = example = category = ''
-    no = 0
+    no = ' no>=0 '
     count = ' limit 10000'
     returnValues = '*'
     if req is None:
         return "Invalid request parameter.", 400
-    
+
     if 'no' in req:
-        no = 'no>=' + str(req['no']) + ' '
+        no = ' no>=' + str(req['no']) + ' '
     # if 'word' in req:
     #     word = formatQueryForDB('word', req['word'])
     # if 'hiragana' in req:
@@ -55,13 +55,16 @@ def getWords():
     print query
     try:
         resultCount = cursor.execute(query)
-        result = cursor.fetchall()
-        db.commit()
-        return jsonify(result)
-    except:
-        db.rollback()
 
-    return jsonify(no)
+        rowHeaders=[x[0] for x in cursor.description] #this will extract row headers
+        results = cursor.fetchall()
+
+        jsonData=[]
+        for item in results:
+            jsonData.append(dict(zip(rowHeaders, item)))
+        return jsonify(jsonData)
+    except:
+        return "Invalid request parameter.", 400
 
 def parseRequestParameters(parameter, value):
     return 0
@@ -75,6 +78,14 @@ def formatQueryForDB(parameter, value):
         val += str(i) + '|'
     val = val[:-1] + "'"
     return formattedQuery + val
+
+@app.route('/')
+def root():
+    return app.send_static_file('home.html')
+
+@app.route('/practice')
+def practice():
+    return app.send_static_file('practice.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
