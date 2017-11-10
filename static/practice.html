@@ -228,14 +228,14 @@
          answerButtonPlace = getRandomInt(1,3)
          document.getElementById("option-button-" + answerButtonPlace).innerHTML =  appendSpecingToText(data[current]["word"])
          if(answerButtonPlace == 1) {
-           document.getElementById("option-button-" + 2).innerHTML = appendSpecingToText(data[getRandomInt(1, dataSize)]["word"])
-           document.getElementById("option-button-" + 3).innerHTML = appendSpecingToText(data[getRandomInt(1, dataSize)]["word"])
+           document.getElementById("option-button-" + 2).innerHTML = appendSpecingToText(data[getRandomInt(1, dataSize)]["word"], answerButtonPlace)
+           document.getElementById("option-button-" + 3).innerHTML = appendSpecingToText(data[getRandomInt(1, dataSize)]["word"], answerButtonPlace)
          } else if(answerButtonPlace == 2) {
-           document.getElementById("option-button-" + 1).innerHTML = appendSpecingToText(data[getRandomInt(1, dataSize)]["word"])
-           document.getElementById("option-button-" + 3).innerHTML = appendSpecingToText(data[getRandomInt(1, dataSize)]["word"])
+           document.getElementById("option-button-" + 1).innerHTML = appendSpecingToText(data[getRandomInt(1, dataSize)]["word"], answerButtonPlace)
+           document.getElementById("option-button-" + 3).innerHTML = appendSpecingToText(data[getRandomInt(1, dataSize)]["word"], answerButtonPlace)
          } else {
-           document.getElementById("option-button-" + 1).innerHTML = appendSpecingToText(data[getRandomInt(1, dataSize)]["word"])
-           document.getElementById("option-button-" + 2).innerHTML = appendSpecingToText(data[getRandomInt(1, dataSize)]["word"])
+           document.getElementById("option-button-" + 1).innerHTML = appendSpecingToText(data[getRandomInt(1, dataSize)]["word"], answerButtonPlace)
+           document.getElementById("option-button-" + 2).innerHTML = appendSpecingToText(data[getRandomInt(1, dataSize)]["word"], answerButtonPlace)
          }
        }
 
@@ -249,8 +249,12 @@
        }
 
 
-       function getRandomInt(min, max) {
-         return Math.floor(Math.random() * (max - min + 1)) + min;
+       function getRandomInt(min, max, exclude) {
+         random = Math.floor(Math.random() * (max - min + 1)) + min;
+         if(random != exclude) {
+           return random
+         }
+         getRandomInt(min, max, exclude)
        }
 
 	</script>
