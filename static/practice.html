@@ -229,9 +229,9 @@
        function setOptionButtonTexts() {
          getRandomInt(1, 3, [], callback= function(random) {
 					 answerButtonPlace = random
-					 getRandomInt(0, dataSize, [answerButtonPlace], callback = function(random) {
+					 getRandomInt(0, dataSize, [current], callback = function(random) {
 						 answerButtonPlace2Data = random
-						 getRandomInt(0, dataSize, [answerButtonPlace, answerButtonPlace2Data], callback = function(random) {
+						 getRandomInt(0, dataSize, [current, answerButtonPlace2Data], callback = function(random) {
 							 answerButtonPlace3Data = random
 							 document.getElementById("option-button-" + answerButtonPlace).innerHTML =  appendSpecingToText(data[current]["word"])
 
@@ -271,7 +271,7 @@
        }
 
        function skipQuestion() {
-         updateCurrentData()
+         checkResult(0)
        }
 	</script>
 </body>
