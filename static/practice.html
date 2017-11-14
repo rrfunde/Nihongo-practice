@@ -155,7 +155,7 @@
     <br>
 
 		<div class="content-div skip">
-			<button class="skip-button">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; skip &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button>
+			<button class="skip-button" onclick="skipQuestion()">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; skip &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button>
 		</div>
 	</div>
 	<script>
@@ -163,7 +163,7 @@
 	   getWords();
      var current = 0, prev = 0
      data = []
-     dataSize = 609
+     dataSize = 609 - 1
      answerButtonPlace = 0
 
 	   function getWords() {
@@ -172,7 +172,7 @@
          param["category"] = categories
          callAjax("/get/words", "POST", param , function(response) {
            data = response
-           dataSize = data.length
+           dataSize = data.length - 1
            updateCurrentData()
          })
 	     })
@@ -213,30 +213,36 @@
 
        function updateCurrentData() {
          prev = current
-         current = getRandomInt(1, dataSize)
-         console.log(prev);
-         if(prev != 0) {
-           let answerText = data[prev]["hiragana"] + " = " + data[prev]["word"]
-           document.getElementById("answer-text").innerHTML = answerText
-         }
-           document.getElementById("question-text").innerHTML = data[current]["hiragana"]
-           document.getElementById("category-text").innerHTML = data[current]["category"]
-           setOptionButtonTexts()
+         getRandomInt(1, dataSize, 0, callback = function(current) {
+					 if(prev != 0) {
+	           let answerText = data[prev]["hiragana"] + " = " + data[prev]["word"]
+	           document.getElementById("answer-text").innerHTML = answerText
+	         }
+	           document.getElementById("question-text").innerHTML = data[current]["hiragana"]
+	           document.getElementById("category-text").innerHTML = data[current]["category"]
+	           setOptionButtonTexts()
+				 })
          }
 
        function setOptionButtonTexts() {
-         answerButtonPlace = getRandomInt(1,3)
-         document.getElementById("option-button-" + answerButtonPlace).innerHTML =  appendSpecingToText(data[current]["word"])
-         if(answerButtonPlace == 1) {
-           document.getElementById("option-button-" + 2).innerHTML = appendSpecingToText(data[getRandomInt(1, dataSize)]["word"], answerButtonPlace)
-           document.getElementById("option-button-" + 3).innerHTML = appendSpecingToText(data[getRandomInt(1, dataSize)]["word"], answerButtonPlace)
-         } else if(answerButtonPlace == 2) {
-           document.getElementById("option-button-" + 1).innerHTML = appendSpecingToText(data[getRandomInt(1, dataSize)]["word"], answerButtonPlace)
-           document.getElementById("option-button-" + 3).innerHTML = appendSpecingToText(data[getRandomInt(1, dataSize)]["word"], answerButtonPlace)
-         } else {
-           document.getElementById("option-button-" + 1).innerHTML = appendSpecingToText(data[getRandomInt(1, dataSize)]["word"], answerButtonPlace)
-           document.getElementById("option-button-" + 2).innerHTML = appendSpecingToText(data[getRandomInt(1, dataSize)]["word"], answerButtonPlace)
-         }
+         getRandomInt(1,3,0, callback= function(answerButtonPlace) {
+					 getRandomInt(0, dataSize, answerButtonPlace, callback = function(answerButtonPlace2Data) {
+						 getRandomInt(0, dataSize, answerButtonPlace, callback = function(answerButtonPlace3Data) {
+							 document.getElementById("option-button-" + answerButtonPlace).innerHTML =  appendSpecingToText(data[current]["word"])
+
+							 if(answerButtonPlace == 1) {
+								 document.getElementById("option-button-" + 2).innerHTML = appendSpecingToText(data[answerButtonPlace2Data]["word"])
+								 document.getElementById("option-button-" + 3).innerHTML = appendSpecingToText(data[answerButtonPlace3Data]["word"])
+							 } else if(answerButtonPlace == 2) {
+								 document.getElementById("option-button-" + 1).innerHTML = appendSpecingToText(data[answerButtonPlace2Data]["word"])
+								 document.getElementById("option-button-" + 3).innerHTML = appendSpecingToText(data[answerButtonPlace3Data]["word"])
+							 } else {
+								 document.getElementById("option-button-" + 1).innerHTML = appendSpecingToText(data[answerButtonPlace2Data]["word"])
+								 document.getElementById("option-button-" + 2).innerHTML = appendSpecingToText(data[answerButtonPlace3Data]["word"])
+							 }
+						 })
+					 })
+				 })
        }
 
        function checkResult(optionNumber) {
@@ -249,14 +255,19 @@
        }
 
 
-       function getRandomInt(min, max, exclude) {
-         random = Math.floor(Math.random() * (max - min + 1)) + min;
+       function getRandomInt(min, max, exclude, callback) {
+				 x= Math.random()
+         random = Math.floor(x * (max - min + 1)) + min;
          if(random != exclude) {
-           return random
-         }
-         getRandomInt(min, max, exclude)
+           callback(random)
+         } else {
+					 getRandomInt(min, max, exclude, callback)					 
+				 }
        }
 
+       function skipQuestion() {
+         updateCurrentData()
+       }
 	</script>
 </body>
 </html>
