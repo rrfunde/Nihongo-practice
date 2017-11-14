@@ -213,7 +213,9 @@
 
        function updateCurrentData() {
          prev = current
-         getRandomInt(1, dataSize, 0, callback = function(current) {
+				 console.log(current);
+         getRandomInt(1, dataSize, [], callback = function(random) {
+					 current = random
 					 if(prev != 0) {
 	           let answerText = data[prev]["hiragana"] + " = " + data[prev]["word"]
 	           document.getElementById("answer-text").innerHTML = answerText
@@ -225,9 +227,12 @@
          }
 
        function setOptionButtonTexts() {
-         getRandomInt(1,3,0, callback= function(answerButtonPlace) {
-					 getRandomInt(0, dataSize, answerButtonPlace, callback = function(answerButtonPlace2Data) {
-						 getRandomInt(0, dataSize, answerButtonPlace, callback = function(answerButtonPlace3Data) {
+         getRandomInt(1, 3, [], callback= function(random) {
+					 answerButtonPlace = random
+					 getRandomInt(0, dataSize, [answerButtonPlace], callback = function(random) {
+						 answerButtonPlace2Data = random
+						 getRandomInt(0, dataSize, [answerButtonPlace, answerButtonPlace2Data], callback = function(random) {
+							 answerButtonPlace3Data = random
 							 document.getElementById("option-button-" + answerButtonPlace).innerHTML =  appendSpecingToText(data[current]["word"])
 
 							 if(answerButtonPlace == 1) {
@@ -258,10 +263,10 @@
        function getRandomInt(min, max, exclude, callback) {
 				 x= Math.random()
          random = Math.floor(x * (max - min + 1)) + min;
-         if(random != exclude) {
+         if(!exclude.includes(random)) {
            callback(random)
          } else {
-					 getRandomInt(min, max, exclude, callback)					 
+					 getRandomInt(min, max, exclude, callback)
 				 }
        }
 
