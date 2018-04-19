@@ -185,7 +185,7 @@ cursor: pointer;
 
     function getCategory() {
       callAjax("/get/category", "GET", "", function(response) {
-
+        response = response["categories"]
         var checkboxSection = document.getElementById("categories_list")
         for(i=0;i<response.length;i++) {
           var list = document.createElement("li")
