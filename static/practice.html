@@ -104,17 +104,6 @@
 	 }
 	}
 
-	/* The switch - the box around the slider */
-	.switch {
-	  position: relative;
-	  display: inline-block;
-	  width: 60px;
-	  height: 34px;
-	}
-
-	/* Hide default HTML checkbox */
-	.switch input {display:none;}
-
 	/* The slider */
 	.slider {
 	  position: absolute;
@@ -178,6 +167,7 @@
 	border: 1px solid #ccc;
   outline: 0;
   border-radius: 15px;
+	font-size: 20px;
 }
 .search-box:focus {
 	box-shadow: 0 0 15px 5px #b0e0ee;
@@ -231,12 +221,6 @@
     <div class="content-div answer">
       <p class="answer-text" id="answer-text">Please choose right option</p>
     </div>
-		<!-- Rounded switch -->
-	<label class="switch">
-		<input type="checkbox" id="isEnglishToJapanese">
-		<span class="slider round"></span>
-	</label>
-
 
     <br>
     <br>
@@ -270,7 +254,7 @@
 		<br>
 
 		<div class="content-div options">
-			<div class="options-buttons">
+			<div class="options-buttons" id="optionButtons">
         <button id="option-button-1" onclick="checkResult(1)">
           option 1
         </button>
@@ -281,8 +265,8 @@
           option 3
         </button>
       </div>
-			<form>
-	<input type="text" id="answerText" required class="search-box" autofocus />
+			<form onsubmit="return false">
+	<input type="text" id="optionText" required class="search-box" autofocus />
 		<button class="close-icon" type="reset"></button>
 	</form>
 		</div>
@@ -297,14 +281,41 @@
 	</div>
 	<script>
 
+	String.prototype.replaceAll = function(search, replacement) {
+	    var target = this;
+	    return target.split(search).join(replacement);
+	};
+
 	   getWords();
      var current = 0, prev = 0
      data = []
      dataSize = 609 - 1
      answerButtonPlace = 0
 		 isEnglishToJapanese = false
-		 questionKey = "word"
-		 optionKey = "hiragana" // "word"  "hiragana"
+
+		 var OptionsType = {
+			 optionText : { name: "optionText" },
+			 optionButtons : { name: "optionButtons" }
+		 }
+
+		 questionKey = "hiragana"
+		 optionKey = "word" // "word"  "hiragana"
+		 optionType = OptionsType.optionButtons
+
+		 if(optionType == OptionsType.optionText) {
+			 document.getElementById(OptionsType.optionButtons.name).style.display = 'none'
+		 } else {
+			 document.getElementById(OptionsType.optionText.name).style.display = 'none'
+		 }
+
+		 document.getElementById("optionText")
+		     .addEventListener("keyup", function(event) {
+		     event.preventDefault();
+		     if (event.keyCode === 13) {
+		         checkResult()
+		     }
+		 });
+
 
 		 function toggleLanguage() {
 			 var temp = questionKey
@@ -402,9 +413,19 @@
 
        function checkResult(optionNumber) {
          answerDivColor = "red"
-         if(optionNumber == answerButtonPlace) {
+
+				 optionTextRaw = document.getElementById("optionText").value.toLowerCase()
+				 optionText = data[current][optionKey].toLowerCase().replaceAll(" ", "")
+				 optionText = optionText.replaceAll("to", "")
+				 optionText = optionText.replace("the", "")
+				 optionText = optionText.replace("\n", "")
+
+				 optionTextAlternatives = optionText.split(",")
+				 console.log(optionTextAlternatives)
+         if(optionNumber == answerButtonPlace || optionTextAlternatives.includes(optionTextRaw)) {
            answerDivColor = "#5cb85c";
          }
+				   document.getElementById("optionText").value = ""
            document.getElementsByClassName("answer")[0].style.backgroundColor = answerDivColor;
 
            updateCurrentData()
