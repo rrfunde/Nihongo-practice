@@ -1,5 +1,6 @@
 #!flask/bin/python
 # -*- coding: utf-8 -*-
+import logging
 
 from flask import Flask, jsonify, request
 from MySQLConnectionHandler import MySQLConnectionHandler
@@ -10,18 +11,19 @@ cursor = mysqlConnector.getCursor()
 
 app = Flask(__name__)
 
+
 @app.route('/get/category')
 def getCategory():
-        sql = "select DISTINCT(category) from vocabulary;"
-        try:
-           cursor.execute(sql)
-           results = cursor.fetchall()
-           categories = [i[0] for i in results]
-           response = {}
-           response["categories"] = categories
-           return jsonify(response)
-        except:
-            return "unknown error occured"
+    sql = "select DISTINCT(category) from vocabulary;"
+    try:
+        cursor.execute(sql)
+        results = cursor.fetchall()
+        categories = [i[0] for i in results]
+        response = {}
+        response["categories"] = categories
+        return jsonify(response)
+    except:
+        return "unknown error occured"
 
 
 @app.route('/get/words', methods=["post"])
@@ -51,23 +53,25 @@ def getWords():
     if 'count' in req:
         count = ' limit ' + str(req['count'])
 
-
-    query = 'select ' + returnValues + ' from vocabulary where '  + category + count + ';'
+    query = 'select ' + returnValues + ' from vocabulary where ' + category + count + ';'
     try:
-        resultCount = cursor.execute(query)
+        cursor.execute(query)
 
-        rowHeaders=[x[0] for x in cursor.description] #this will extract row headers
+        rowHeaders = [x[0] for x in cursor.description]  # this will extract row headers
         results = cursor.fetchall()
 
-        jsonData=[]
+        jsonData = []
         for item in results:
             jsonData.append(dict(zip(rowHeaders, item)))
         return jsonify(jsonData)
-    except:
+    except Exception as e:
+        logging.error(f"error in getting words {e}")
         return "Invalid request parameter.", 400
+
 
 def parseRequestParameters(parameter, value):
     return 0
+
 
 def formatQueryForDB(parameter, value):
     if len(value) == 1:
@@ -79,13 +83,16 @@ def formatQueryForDB(parameter, value):
     val = val[:-1] + "'"
     return formattedQuery + val
 
+
 @app.route('/')
 def root():
     return app.send_static_file('home.html')
 
+
 @app.route('/practice')
 def practice():
     return app.send_static_file('practice.html')
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)
