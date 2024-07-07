@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Flask" type="Python.FlaskServer" nameIsGenerated="true">
+  <configuration default="false" name="Flask (Api.py)" type="Python.FlaskServer" nameIsGenerated="true">
     <module name="Nihongo-practice" />
-    <option name="target" value="Api" />
-    <option name="targetType" value="PYTHON" />
+    <option name="target" value="$PROJECT_DIR$/Api.py" />
+    <option name="targetType" value="PATH" />
     <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
