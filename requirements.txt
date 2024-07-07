@@ -1,2 +1,4 @@
 Flask~=3.0.3
 mysql-connector-python
+beautifulsoup4
+urllib2
