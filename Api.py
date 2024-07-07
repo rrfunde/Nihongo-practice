@@ -35,7 +35,7 @@ def getWords():
         return "Invalid request parameter.", 400
 
     if 'no' in req:
-        no = ' no>=' + str(req['no']) + ' '
+        no = ''
     # if 'word' in req:
     #     word = formatQueryForDB('word', req['word'])
     # if 'hiragana' in req:
@@ -47,12 +47,12 @@ def getWords():
     # if 'returnValues' in req:
     #     returnValues = req['returnValues']
     if 'category' in req:
-        category = ' and ' + formatQueryForDB('category', req['category'])
+        category = ' ' + formatQueryForDB('category', req['category'])
     if 'count' in req:
         count = ' limit ' + str(req['count'])
 
 
-    query = 'select ' + returnValues + ' from vocabulary where ' + no + category + count + ';'
+    query = 'select ' + returnValues + ' from vocabulary where '  + category + count + ';'
     try:
         resultCount = cursor.execute(query)
 
@@ -88,4 +88,4 @@ def practice():
     return app.send_static_file('practice.html')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=True)

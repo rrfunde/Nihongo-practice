@@ -6,7 +6,7 @@ class MySQLConnectionHandler:
         self.db = mysql.connector.connect(
             host="localhost",
             user="root",
-            password="Async128",
+            password="",
             database="Sweety"
         )
         self.cursor = self.db.cursor()
