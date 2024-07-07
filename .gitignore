@@ -3,3 +3,5 @@
 .idea/detekt.xml
 .idea/misc.xml
 .idea/vcs.xml
+__pycache__/Api.cpython-39.pyc
+__pycache__/MySQLConnectionHandler.cpython-39.pyc

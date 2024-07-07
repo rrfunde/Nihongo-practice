@@ -53,7 +53,6 @@ def getWords():
 
 
     query = 'select ' + returnValues + ' from vocabulary where ' + no + category + count + ';'
-    print query
     try:
         resultCount = cursor.execute(query)
 
